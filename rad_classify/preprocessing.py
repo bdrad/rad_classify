@@ -61,16 +61,17 @@ class SentenceTokenizer(TransformerMixin):
         return result
 
 class ReportObjCreator(TransformerMixin):
-    def transform(self, report_tuples, *_):
-        return [{"report" : rt, "exam" : ed} for rt, ed in report_tuples]
+    def transform(self, reports, labels, *_):
+        if len(reports) != len(labels):
+            raise ValueError("Reports (length %d) should be the same length as labels (length %d)" % (len(reports), len(labels)))
+        return [{"report" : rt, "label" : l} for rt, l in zip(reports, labels)]
 
 class ReportLabeler(TransformerMixin):
     def transform(self, reports, *_):
         result = []
         for report_obj in reports:
-            label = fine_ground_truth_label(report_obj["exam"])
-            if label != 2:
-                result.append((report_obj["sentences"], label))
+            label = report_obj["label"]
+            result.append((report_obj["sentences"], label))
         return result
 
 import argparse

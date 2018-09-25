@@ -9,11 +9,6 @@ import re
 def read_replacements(replacement_file_path):
     return pickle.load(open(replacement_file_path, 'rb'))
 
-def reports_to_corpus(reports, out_file):
-    for report in reports:
-        for sentence in report[0]:
-            out_file.write(sentence + "\n")
-
 class NegexSmearer(TransformerMixin):
     def __init__(self, negex_range=5):
         self.negex_range = negex_range
