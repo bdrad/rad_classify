@@ -1,5 +1,31 @@
 import re
 import csv
+import numpy as np
+from nltk.tokenize import sent_tokenize
+from sklearn.base import TransformerMixin
+
+class MapperTransformer(TransformerMixin):
+    '''
+    sklearn transformer which applies map_fn to each sample in X
+    '''
+    def map_fn(self, x):
+        return report
+
+    def transform(self, X, *_):
+        return np.vectorize(self.map_fn)(X)
+
+class SentenceTransformer(MapperTransformer):
+    '''
+    Transformer which applies sentence_map_fn to each sentence in a string
+    '''
+    def sentence_map(self, sentence):
+        return sentence
+
+    def map_fn(self, report_text):
+        sentences = sent_tokenize(report_text)
+        mapped_sentences = [self.sentence_map(s) for s in sentences]
+        return ". ".join(mapped_sentences)
+
 
 def extract_impression(report_text):
     '''
