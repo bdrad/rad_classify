@@ -10,31 +10,22 @@ import re
 def read_replacements(replacement_file_path):
     return pickle.load(open(replacement_file_path, 'rb'))
 
-class NegexSmearer(SentenceTransformer):
-    def __init__(self, negex_range=5):
-        self.negex_range = negex_range
-    def sentence_map(self, sentence, *_):
-        tokenized = sentence.split(" ")
-        negex_indices = [i for i, t in enumerate(tokenized) if t == "NEGEX"]
-        to_negate = []
-        for offset in range(1, self.negex_range + 1):
-            to_negate += [i + offset for i in negex_indices]
-        to_negate = [tn for tn in to_negate if not tn in negex_indices]
-        to_negate = [tn for tn in to_negate if tn < len(tokenized) and tn >= 0]
-
-        EXT_indices = []
-        for i in to_negate:
-            if tokenized[i] == "EXT":
-                EXT_indices.append(i)
-                to_negate = to_negate + [r + i for r in range(1, self.negex_range + 1)]
-        to_negate = [tn for tn in to_negate if not (tn in negex_indices or tn in EXT_indices)]
-        to_negate = [tn for tn in to_negate if tn < len(tokenized) and tn >= 0]
-
-        for i in to_negate:
-            tokenized[i] = "NEGEX_" + tokenized[i]
-        clean_tokenized = [t for i, t in enumerate(tokenized) if not i in negex_indices]
-        new_sentence = " ".join(clean_tokenized).replace("NEGEX_NEGEX_", "NEGEX_")
-        return new_sentence
+negation_stopping_punct = ".,?!;:"
+class NegationMarker(MapperTransformer):
+    def map_fn(self, text, *_):
+        words = word_tokenize(text)
+        negating = False
+        new_words = []
+        for word in words:
+            if word in negation_stopping_punct:
+                negating = False
+            if word == 'NEGEX':
+                negating = True
+            elif negating:
+                new_words.append("NEGEX_" + word)
+            else:
+                new_words.append(word)
+        return " ".join(new_words)
 
 stop_words = set(stopwords.words('english'))
 extra_removal = set(["cm", "mm", "x", "please", "is", "are", "be", "been"])
@@ -66,9 +57,6 @@ DateTimeMapper = SemanticMapper([(r'[0-9][0-9]? [0-9][0-9]? [0-9][0-9][0-9][0-9]
                                  (r'[0-9][0-9]? [0-9][0-9] (am|pm)?', '')], regex=True)
 
 AlphaNumRemover = SemanticMapper([(r' [0-9]+','')], regex=True)
-
-ExtenderPreserver = SemanticMapper([(' or ', ' EXT '), (' nor ', ' EXT ')])
-ExtenderRemover = SemanticMapper([('EXT', ''), ('NEGEX_EXT', ''), (('NEGEX_ ', ''))])
 
 import argparse
 import pickle

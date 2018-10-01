@@ -3,7 +3,7 @@ import os
 import pickle
 from random import shuffle
 
-class ClassificationModel():
+class FastTextClassifier():
     def __init__(self, path=None):
         if path is not None:
             self.model = fastText.load_model(os.path.join(path, "ft.bin"))
@@ -15,10 +15,10 @@ class ClassificationModel():
 
         # Convert training data into strings for fastText
         mapped_report_strs = []
-        for i in range(len(data)):
-            report_string = data[i].replace("\n", " ")
-            label = " __label__" + str(labels[i])
-            mapped_report_strs.append(report_string + label)
+        for report, label in zip(data, labels):
+            report_string = report.replace("\n", " ")
+            label_string = " __label__" + str(labels[i])
+            mapped_report_strs.append(report_string + label_string)
         shuffle(mapped_report_strs)
 
         # Write strings to a temp file

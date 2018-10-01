@@ -1,4 +1,4 @@
-from .preprocessing import SectionExtractor, SentenceTokenizer
+from .preprocessing import SectionExtractor, SentenceTokenizer, PunctuationRemover
 from .semantic_mapping import *
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline, make_pipeline
@@ -24,9 +24,9 @@ class EndToEndProcessor():
             RadlexMapper = SemanticMapper(radlex_replacements)
 
         self.pipeline = make_pipeline(SectionExtractor(sections),
-            SentenceTokenizer(), DateTimeMapper,ExtenderPreserver,
-            ReplacementMapper, RadlexMapper, StopWordRemover(), NegexSmearer(),
-            ExtenderRemover, None)
+            SentenceTokenizer(), DateTimeMapper, ReplacementMapper,
+            RadlexMapper, StopWordRemover(), NegationMarker(),
+            PunctuationRemover(), None)
 
     def transform(self, reports):
         report_array = np.reshape(np.array(reports), (-1, 1))

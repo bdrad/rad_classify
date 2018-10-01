@@ -3,7 +3,7 @@ import re
 from random import shuffle
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline, FeatureUnion, make_pipeline
-from nltk.tokenize import sent_tokenize
+from nltk.tokenize import sent_tokenize, word_tokenize
 from .util import *
 
 section_extraction_fns = {
@@ -33,7 +33,6 @@ class SectionExtractor(MapperTransformer):
         print(combined_report)
         return combined_report
 
-punct = "!\"#$%&\'()*+,-.:;<=>?@[\]^_`{|}~\n"
 class SentenceTokenizer(MapperTransformer):
     def map_fn(self, text, *_):
         text = text.replace("Dr.", "Dr")
@@ -46,13 +45,18 @@ class SentenceTokenizer(MapperTransformer):
         for sentence in section_sentences:
             if len(sentence) <= 2:
                 continue
-            for p in punct:
-                sentence = sentence.replace(p, " ")
             sentence = sentence.replace("/", " ")
             sentence = sentence.replace("  ", " ")
             sentence = sentence.strip().lower()
             new_sentences.append(sentence)
         return ". ".join(new_sentences)
+
+punct = "!\"#$%&\'()*+,-.:;<=>?@[\]^`{|}~\n"
+class PunctuationRemover(MapperTransformer):
+    def map_fn(self, text, *_):
+        words = word_tokenize(text)
+        return ' '.join(c for c in words if c not in punct)
+
 
 import argparse
 import pickle
