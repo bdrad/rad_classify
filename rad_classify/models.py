@@ -9,6 +9,9 @@ class FastTextClassifier():
             self.model = fastText.load_model(os.path.join(path, "ft.bin"))
             return
 
+    '''
+    Labels should be 0 or 1 (binary classification only)
+    '''
     def train(self, data, labels, dim=100, ngram=2, epoch=20, lr=0.05, thread=4):
         if len(data) != len(labels):
             raise ValueError("Length of data (" + str(len(data)) + ") does not match length of labels (" + str(len(labels)) + ")" )
@@ -17,7 +20,7 @@ class FastTextClassifier():
         mapped_report_strs = []
         for report, label in zip(data, labels):
             report_string = report.replace("\n", " ")
-            label_string = " __label__" + str(labels[i])
+            label_string = " __label__" + str(label)
             mapped_report_strs.append(report_string + label_string)
         shuffle(mapped_report_strs)
 
@@ -35,14 +38,16 @@ class FastTextClassifier():
         os.remove(train_path)
 
     def predict(self, report):
-        prediction = self.model.predict(report)
-        conf = 0.5 - (prediction[1][0] / 2) if prediction[0][0] == '__label__0' else 0.5 + (prediction[1][0] / 2)
-        return conf
+        if isinstance(report, str):
+            prediction = self.model.predict(report)
+            conf = 0.5 - (prediction[1][0] / 2) if prediction[0][0] == '__label__0' else 0.5 + (prediction[1][0] / 2)
+            return conf
+        else:
+            return list(map(self.predict, report))
 
     def save_model(self, path):
         os.mkdir(path)
         self.model.save_model(os.path.join(path, "ft.bin"))
-
 
     def get_words(self):
         return self.model.get_words()

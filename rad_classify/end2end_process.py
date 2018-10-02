@@ -10,17 +10,17 @@ def read_replacements(replacement_file_path):
     return pickle.load(open(replacement_file_path, 'rb'))
 
 class EndToEndProcessor():
-    def __init__(self, replacement_file_path=None, radlex_path=None, sections=None):
-        if replacement_file_path is  None:
+    def __init__(self, replacement_path="./rad_classify/semantic_dictionaries/clever_replacements", radlex_path="./rad_classify/semantic_dictionaries/radlex_replacements", sections=None):
+        if replacement_path is  None:
             ReplacementMapper = FunctionTransformer()
         else:
-            replacements = read_replacements(replacement_file_path)
+            replacements = read_replacements(replacement_path)
             ReplacementMapper = SemanticMapper(replacements)
 
         if radlex_path is None:
             RadlexMapper = FunctionTransformer()
         else:
-            radlex_replacements = read_replacements(radlex)
+            radlex_replacements = read_replacements(radlex_path)
             RadlexMapper = SemanticMapper(radlex_replacements)
 
         self.pipeline = make_pipeline(SectionExtractor(sections),

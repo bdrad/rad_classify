@@ -25,7 +25,6 @@ class SectionExtractor(MapperTransformer):
                 self.extraction_fns.append(section_extraction_fns[section])
 
     def map_fn(self, report, *_):
-        print(report)
         if True in [di in report for di in drop_indicators]:
             return ""
         sections = [extract_fn(report) for extract_fn in self.extraction_fns]
