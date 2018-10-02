@@ -29,9 +29,7 @@ class SectionExtractor(MapperTransformer):
         if True in [di in report for di in drop_indicators]:
             return ""
         sections = [extract_fn(report) for extract_fn in self.extraction_fns]
-        combined_report = "\n".join(sections)
-        print(combined_report)
-        return combined_report
+        return "\n".join(sections)
 
 class SentenceTokenizer(MapperTransformer):
     def map_fn(self, text, *_):

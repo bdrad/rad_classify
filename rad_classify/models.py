@@ -9,7 +9,7 @@ class FastTextClassifier():
             self.model = fastText.load_model(os.path.join(path, "ft.bin"))
             return
 
-    def train(self, data, labels, dim=100, ng=3, epoch=22, lr=0.05):
+    def train(self, data, labels, dim=100, ngram=2, epoch=20, lr=0.05, thread=4):
         if len(data) != len(labels):
             raise ValueError("Length of data (" + str(len(data)) + ") does not match length of labels (" + str(len(labels)) + ")" )
 
@@ -29,7 +29,7 @@ class FastTextClassifier():
                 outfile.write("\n")
 
         # Train fastText model
-        self.model = fastText.train_supervised(train_path, dim=dim, epoch=epoch, thread=4, lr=lr, wordNgrams=ng)
+        self.model = fastText.train_supervised(train_path, dim=dim, epoch=epoch, thread=thread, lr=lr, wordNgrams=ngram)
 
         # Delete temp file
         os.remove(train_path)

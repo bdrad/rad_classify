@@ -30,4 +30,5 @@ class EndToEndProcessor():
 
     def transform(self, reports):
         report_array = np.reshape(np.array(reports), (-1, 1))
-        return self.pipeline.transform(report_array)
+        transformed_array = self.pipeline.transform(report_array)
+        return transformed_array[:,0]
