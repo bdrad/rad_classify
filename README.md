@@ -10,7 +10,7 @@ $ pip install .
 ```
 Once fastText is installed, you can install Rad Classify by cd'ing into the `rad_classify` directory and running
 ```
-$ pip install .
+$ pip install -r requirements.txt
 ```
 Rad Classify also depends on NLTK and sklearn, but these should be installed by pip automatically.
 
