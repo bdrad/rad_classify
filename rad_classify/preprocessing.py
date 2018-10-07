@@ -4,7 +4,7 @@ from random import shuffle
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline, FeatureUnion, make_pipeline
 from nltk.tokenize import sent_tokenize, word_tokenize
-from .util import *
+from rad_classify import extract_impression, extract_clinical_history, extract_findings, get_reports_from_csv, MapperTransformer
 
 section_extraction_fns = {
     "impression": extract_impression,
@@ -13,6 +13,12 @@ section_extraction_fns = {
 }
 
 drop_indicators = ["is a non-reportable study", "consent form", "informed consent"]
+class ClearDroppedReports(MapperTransformer):
+    def map_fn(self, report):
+        if any(di in report.lower() for di in drop_indicators):
+            return ""
+        return report
+
 class SectionExtractor(MapperTransformer):
     def __init__(self, sections=None):
         self.extraction_fns = []
@@ -25,15 +31,12 @@ class SectionExtractor(MapperTransformer):
                 self.extraction_fns.append(section_extraction_fns[section])
 
     def map_fn(self, report, *_):
-        if True in [di in report for di in drop_indicators]:
-            return ""
         sections = [extract_fn(report) for extract_fn in self.extraction_fns]
         return "\n".join(sections)
 
 class SentenceTokenizer(MapperTransformer):
     def map_fn(self, text, *_):
         text = text.replace("Dr.", "Dr")
-        text = re.sub('[0-9]\. ', "", text)
         text = text.replace("r/o", "rule out")
         text = text.replace("R/O", "rule out")
 
@@ -46,7 +49,7 @@ class SentenceTokenizer(MapperTransformer):
             sentence = sentence.replace("  ", " ")
             sentence = sentence.strip().lower()
             new_sentences.append(sentence)
-        return ". ".join(new_sentences)
+        return " ".join(new_sentences)
 
 punct = "!\"#$%&\'()*+,-.:;<=>?@[\]^`{|}~\n"
 class PunctuationRemover(MapperTransformer):

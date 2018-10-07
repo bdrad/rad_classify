@@ -1,0 +1,28 @@
+INDICATION:
+MR BRAINNAV WITH DTI
+CLINICAL HISTORY: Unruptured aneurysm
+COMPARISON: CTA brain same date
+TECHNIQUE: Multiple sequences through the brain were acquired at 3.0 
+tesla.
+CONTRAST MEDIA: Intravenous gadolinium chelate was administered for 
+post-contrast imaging.
+FINDINGS:
+Parenchyma:  No mass effect or evidence for hemorrhage.  Minimal scattered 
+foci of white matter foci of T2/FLAIR signal hyperintensity, nonspecific, 
+likely related to senescent change.
+Vasculature: Mild irregularity of the cavernous and supraclinoid internal 
+carotid arteries related to atherosclerosis.
+Marrow: Normal marrow signal intensity within the skull base, calvarium 
+and facial skeleton.
+Visualized orbits:  Unremarkable.
+Visualized paranasal sinuses:  Unremarkable.
+
+IMPRESSION:
+1. MRI performed for neurosurgical navigation. No acute infarct, 
+hemorrhage, hydrocephalus, herniation.
+2. Redemonstration of 1.5 cm superiorly directed left cavernous/clinoid 
+internal carotid artery aneurysm (fusiform versus wide necked saccular). 
+Conventional angiogram is recommended for further evaluation.
+3.  Additional inferomedially directed 3 mm aneurysm of the right 
+supraclinoid internal carotid artery is also noted, better seen on prior 
+CTA.

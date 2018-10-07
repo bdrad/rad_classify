@@ -24,7 +24,7 @@ class SentenceTransformer(MapperTransformer):
     def map_fn(self, report_text):
         sentences = sent_tokenize(report_text)
         mapped_sentences = [self.sentence_map(s) for s in sentences]
-        return ". ".join(mapped_sentences)
+        return " ".join(mapped_sentences)
 
 
 def extract_impression(report_text):
