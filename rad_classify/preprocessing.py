@@ -46,12 +46,13 @@ class SentenceTokenizer(MapperTransformer):
             if len(sentence) <= 2:
                 continue
             sentence = sentence.replace("/", " ")
+            sentence = sentence.replace(":", " ")
             sentence = sentence.replace("  ", " ")
             sentence = sentence.strip().lower()
             new_sentences.append(sentence)
         return " ".join(new_sentences)
 
-punct = "!\"#$%&\'()*+,-.:;<=>?@[\]^`{|}~\n"
+punct = '!"#$%&\'()*+,-.:;<=>?@[\]^`{|}~\n'
 class PunctuationRemover(MapperTransformer):
     def map_fn(self, text, *_):
         words = word_tokenize(text)

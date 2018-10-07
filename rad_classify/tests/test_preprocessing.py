@@ -3,7 +3,7 @@ import sys
 import numpy as np
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from preprocessing import SectionExtractor, SentenceTokenizer, ClearDroppedReports
+from preprocessing import SectionExtractor, SentenceTokenizer, ClearDroppedReports, PunctuationRemover
 
 with open('./rad_classify/tests/data/example_report.txt') as report_file:
     example_report = report_file.read()

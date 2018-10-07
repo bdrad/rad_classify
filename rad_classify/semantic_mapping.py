@@ -3,7 +3,7 @@ from sklearn.pipeline import Pipeline, FeatureUnion, make_pipeline
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from gensim.models import Phrases
-from .util import MapperTransformer, SentenceTransformer
+from rad_classify import MapperTransformer, SentenceTransformer
 import pickle
 import re
 
@@ -53,8 +53,8 @@ class SemanticMapper(SentenceTransformer):
             sentence = sentence.replace("  ", " ").strip()
             return sentence
 
-DateTimeMapper = SemanticMapper([(r'[0-9][0-9]? [0-9][0-9]? [0-9][0-9][0-9][0-9]', ''),
-                                 (r'[0-9][0-9]? [0-9][0-9] (am|pm)?', '')], regex=True)
+DateTimeMapper = SemanticMapper([(r'[0-9][0-9]?(/|-)[0-9][0-9]?(/|-)[0-9][0-9]([0-9][0-9])?', 'DATE'),
+                                 (r'[0-9][0-9]?:[0-9][0-9] ?(am|pm)?', 'TIME')], regex=True)
 
 AlphaNumRemover = SemanticMapper([(r' [0-9]+','')], regex=True)
 
