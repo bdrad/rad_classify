@@ -17,7 +17,8 @@ Rad Classify also depends on NLTK and sklearn, but these should be installed by 
 ## Usage
 After installation, we can import the `rad_classify` module and start using its methods
 ```
-from rad_classify import EndToEndProcessor, FastTextClassifier, get_reports_from_csv
+from rad_classify import EndToEndProcessor, get_reports_from_csv
+from rad_classify.models import FastTextClassifier
 
 path = "./data/rad_reports.csv"
 reports, labels = zip(*get_reports_from_csv(path, report_col="Report Text", label_col="Label"))
