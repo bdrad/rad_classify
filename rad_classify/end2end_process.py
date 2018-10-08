@@ -1,5 +1,4 @@
-from .preprocessing import SectionExtractor, SentenceTokenizer, PunctuationRemover, ClearDroppedReports
-from .semantic_mapping import *
+from rad_classify import SectionExtractor, SentenceTokenizer, PunctuationRemover, ClearDroppedReports
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import FunctionTransformer

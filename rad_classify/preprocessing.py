@@ -4,7 +4,8 @@ from random import shuffle
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline, FeatureUnion, make_pipeline
 from nltk.tokenize import sent_tokenize, word_tokenize
-from rad_classify import extract_impression, extract_clinical_history, extract_findings, get_reports_from_csv, MapperTransformer
+from nltk.corpus import stopwords
+from rad_classify import extract_impression, extract_clinical_history, extract_findings, get_reports_from_csv, MapperTransformer, SentenceTransformer
 
 section_extraction_fns = {
     "impression": extract_impression,
@@ -59,21 +60,31 @@ class PunctuationRemover(MapperTransformer):
         return ' '.join(c for c in words if c not in punct)
 
 
-import argparse
-import pickle
-import itertools
+negation_stopping_punct = ".,?!;:"
+class NegationMarker(MapperTransformer):
+    def __init__(self, negation_phrases=["NEGEX"]):
+        self.negation_phrases = negation_phrases
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Preprocess a corpus and output it to a file')
-    parser.add_argument('-i','--in_path', nargs='+', required=True)
-    parser.add_argument('-o','--out_path', nargs=1, required=True)
+    def map_fn(self, text, *_):
+        words = word_tokenize(text)
+        negating = False
+        new_words = []
+        for word in words:
+            if word in negation_stopping_punct:
+                negating = False
+            if word in self.negation_phrases:
+                negating = True
+            elif negating:
+                new_words.append("NEGEX_" + word)
+            else:
+                new_words.append(word)
+        return " ".join(new_words)
 
-    args = parser.parse_args()
-
-    data = [get_reports_from_csv(ip) for ip in args.in_path]
-    merged_data = list(set(itertools.chain.from_iterable(data)))
-
-    pipeline = make_pipeline(ReportObjCreator(), SectionExtractor(), SentenceTokenizer(), ReportLabeler(), None)
-    preprocessed = pipeline.transform(merged_data)
-    print("Writing " + str(len(preprocessed)) + " preprocessed reports")
-    pickle.dump(preprocessed, open(args.out_path[0], "wb"))
+stop_words = set(stopwords.words('english'))
+extra_removal = set(["cm", "mm", "x", "please", "is", "are", "be", "been"])
+to_remove = stop_words.union(extra_removal)
+class StopWordRemover(SentenceTransformer):
+    def sentence_map(self, sentence, *_):
+        words = word_tokenize(sentence)
+        filtered_sentence = [w for w in words if (not w in to_remove) and (not w.isdigit())]
+        return " ".join(filtered_sentence)
