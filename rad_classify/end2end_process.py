@@ -1,4 +1,4 @@
-from rad_classify import SectionExtractor, SentenceTokenizer, PunctuationRemover, ClearDroppedReports, NegationMarker, DateTimeMapper, StopWordRemover, SemanticMapper
+from rad_classify import SectionExtractor, SentenceTokenizer, PunctuationRemover, ClearDroppedReports, NegationMarker, StopWordRemover, DateTimeMapper, SemanticMapper
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import FunctionTransformer
@@ -8,9 +8,9 @@ import numpy as np
 def read_replacements(replacement_file_path):
     return pickle.load(open(replacement_file_path, 'rb'))
 
-class EndToEndProcessor():
+class EndToEndPreprocessor():
     def __init__(self, replacement_path="./rad_classify/semantic_dictionaries/clever_replacements", radlex_path="./rad_classify/semantic_dictionaries/radlex_replacements", sections=None):
-        if replacement_path is  None:
+        if replacement_path is None:
             ReplacementMapper = FunctionTransformer()
         else:
             replacements = read_replacements(replacement_path)

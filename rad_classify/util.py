@@ -25,7 +25,6 @@ class MapperTransformer(TransformerMixin):
             return np.reshape(np.array(mapped_X), (-1, 1))
 
 
-
 class SentenceTransformer(MapperTransformer):
     '''
     Transformer which applies sentence_map_fn to each sentence in a string
@@ -37,7 +36,6 @@ class SentenceTransformer(MapperTransformer):
         sentences = sent_tokenize(report_text)
         mapped_sentences = [self.sentence_map(s) for s in sentences]
         return " ".join(mapped_sentences)
-
 
 def extract_impression(report_text):
     '''

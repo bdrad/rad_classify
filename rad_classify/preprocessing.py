@@ -5,7 +5,7 @@ from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline, FeatureUnion, make_pipeline
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
-from rad_classify import extract_impression, extract_clinical_history, extract_findings, get_reports_from_csv, MapperTransformer, SentenceTransformer
+from rad_classify import extract_impression, extract_clinical_history, extract_findings, MapperTransformer, SentenceTransformer
 
 section_extraction_fns = {
     "impression": extract_impression,
@@ -21,7 +21,8 @@ class ClearDroppedReports(MapperTransformer):
         return report
 
 class SectionExtractor(MapperTransformer):
-    def __init__(self, sections=None):
+    def __init__(self, sections=None, threads=1):
+        self.threads = threads
         self.extraction_fns = []
         if sections is None:
             self.extraction_fns = [lambda x: x] # Extract whole report
@@ -62,8 +63,9 @@ class PunctuationRemover(MapperTransformer):
 
 negation_stopping_punct = ".,?!;:"
 class NegationMarker(MapperTransformer):
-    def __init__(self, negation_phrases=["NEGEX"]):
+    def __init__(self, negation_phrases=["NEGEX"], threads=1):
         self.negation_phrases = negation_phrases
+        self.threads = threads
 
     def map_fn(self, text, *_):
         words = word_tokenize(text)
