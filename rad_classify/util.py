@@ -11,7 +11,7 @@ class MapperTransformer(TransformerMixin):
     '''
     def __init__(self, threads=1):
         self.threads = threads
-    
+
     def map_fn(self, report_text):
         return report_text
 
@@ -50,7 +50,7 @@ def extract_impression(report_text):
 
 def extract_clinical_history(report_text):
     '''
-    report_text: (str) A standard ucsf report text associated with an record entry.
+    report_text: (str) A standard ucsf reptort text associated with an record entry.
     Returns: (str) The clinical history from the report
     '''
     ch_search = re.search('CLINICAL HISTORY:((.|\n)+?)\n([A-Z]| )+:', report_text)
