@@ -9,9 +9,10 @@ def read_replacements(replacement_file_path):
     return pickle.load(open(replacement_file_path, 'rb'))
 
 class SemanticMapper(SentenceTransformer):
-    def __init__(self, replacements, regex=False):
+    def __init__(self, replacements, regex=False, threads=1):
         self.replacements = replacements
         self.regex = regex
+        self.threads = threads
 
     def sentence_map(self, sentence, *_):
         if self.regex:

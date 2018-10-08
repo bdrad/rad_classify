@@ -1,4 +1,4 @@
-from rad_classify import SectionExtractor, SentenceTokenizer, PunctuationRemover, ClearDroppedReports
+from rad_classify import SectionExtractor, SentenceTokenizer, PunctuationRemover, ClearDroppedReports, NegationMarker, DateTimeMapper, StopWordRemover, SemanticMapper
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import FunctionTransformer
@@ -14,13 +14,13 @@ class EndToEndProcessor():
             ReplacementMapper = FunctionTransformer()
         else:
             replacements = read_replacements(replacement_path)
-            ReplacementMapper = SemanticMapper(replacements)
+            ReplacementMapper = SemanticMapper(replacements, threads=8)
 
         if radlex_path is None:
             RadlexMapper = FunctionTransformer()
         else:
             radlex_replacements = read_replacements(radlex_path)
-            RadlexMapper = SemanticMapper(radlex_replacements)
+            RadlexMapper = SemanticMapper(radlex_replacements, threads=8)
 
         self.pipeline = make_pipeline(
             ClearDroppedReports(),

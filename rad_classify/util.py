@@ -3,16 +3,28 @@ import csv
 import numpy as np
 from nltk.tokenize import sent_tokenize
 from sklearn.base import TransformerMixin
+from multiprocessing import Pool
 
 class MapperTransformer(TransformerMixin):
     '''
     sklearn transformer which applies map_fn to each sample in X
     '''
-    def map_fn(self, x):
-        return report
+    def __init__(self, threads=1):
+        self.threads = threads
+    
+    def map_fn(self, report_text):
+        return report_text
 
-    def transform(self, X, *_):
-        return np.vectorize(self.map_fn)(X)
+    def transform(self, X):
+        if self.threads == 1:
+            return np.vectorize(self.map_fn)(X)
+        else:
+            X_flat = X.flatten()
+            p = Pool(self.threads)
+            mapped_X = p.map(self.map_fn, X_flat)
+            return np.reshape(np.array(mapped_X), (-1, 1))
+
+
 
 class SentenceTransformer(MapperTransformer):
     '''
